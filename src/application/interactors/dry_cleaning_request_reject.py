@@ -12,7 +12,4 @@ class DryCleaningRequestRejectInteractor:
     gateway: DryCleaningRequestGateway
 
     async def execute(self):
-        await self.gateway.reject(
-            request_id=self.review_result.dry_cleaning_request_id,
-            comment=self.review_result.comment,
-        )
+        await self.gateway.reject(review_result=self.review_result)

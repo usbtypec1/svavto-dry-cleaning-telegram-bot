@@ -24,13 +24,13 @@ class DryCleaningRequestGateway:
             f'/{review_result.dry_cleaning_request_id}/approve/'
         )
         request_data = {
-            'comment': review_result.comment,
+            'response_comment': review_result.comment,
             'services': [
-                {'id': service.id, 'count': service.count}
+                {'id': str(service.id), 'count': service.count}
                 for service in review_result.services
             ]
         }
-        await self.http_client.post(url, json=request_data)
+        response = await self.http_client.post(url, json=request_data)
 
     async def reject(
             self,
@@ -40,5 +40,5 @@ class DryCleaningRequestGateway:
             '/shifts/dry-cleaning-requests'
             f'/{review_result.dry_cleaning_request_id}/reject/'
         )
-        request_data = {'comment': review_result.comment}
-        await self.http_client.post(url, json=request_data)
+        request_data = {'response_comment': review_result.comment}
+        response = await self.http_client.post(url, json=request_data)

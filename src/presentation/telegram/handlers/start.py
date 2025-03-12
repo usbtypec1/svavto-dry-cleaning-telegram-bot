@@ -19,7 +19,7 @@ async def on_start(
         config: Config,
 ) -> None:
     view = MenuView(
-        msk_web_app_base_url=config.msk_web_app_base_url,
-        spb_web_app_base_url=config.spb_web_app_base_url,
+        msk_web_app_base_url=config.web_app.msk_base_url,
+        spb_web_app_base_url=config.web_app.spb_base_url,
     )
     await answer_view(message, view)

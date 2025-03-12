@@ -10,11 +10,17 @@ CONFIG_FILE_PATH: Final[pathlib.Path] = (
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
+class BaseUrlsConfig:
+    msk_base_url: str
+    spb_base_url: str
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
 class Config:
     telegram_bot_token: str
     whitelist_user_ids: set[int]
-    msk_web_app_base_url: str
-    spb_web_app_base_url: str
+    web_app: BaseUrlsConfig
+    api: BaseUrlsConfig
 
 
 def load_config_from_file(
@@ -26,6 +32,12 @@ def load_config_from_file(
     return Config(
         telegram_bot_token=config['telegram_bot']['token'],
         whitelist_user_ids=set(config['telegram_bot']['whitelist_user_ids']),
-        msk_web_app_base_url=config['web_app']['msk_base_url'],
-        spb_web_app_base_url=config['web_app']['spb_base_url'],
+        web_app=BaseUrlsConfig(
+            msk_base_url=config['web_app']['msk_base_url'],
+            spb_base_url=config['web_app']['spb_base_url'],
+        ),
+        api=BaseUrlsConfig(
+            msk_base_url=config['api']['msk_base_url'],
+            spb_base_url=config['api']['spb_base_url'],
+        ),
     )

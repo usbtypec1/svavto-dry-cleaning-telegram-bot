@@ -12,12 +12,4 @@ class DryCleaningRequestApproveInteractor:
     gateway: DryCleaningRequestGateway
 
     async def execute(self):
-        services = [
-            {'id': service.id, 'count': service.count}
-            for service in self.review_result.services
-        ]
-        await self.gateway.approve(
-            request_id=self.review_result.dry_cleaning_request_id,
-            services=services,
-            comment=self.review_result.comment,
-        )
+        await self.gateway.approve(review_result=self.review_result)

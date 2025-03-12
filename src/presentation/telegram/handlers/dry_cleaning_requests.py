@@ -24,6 +24,7 @@ from presentation.telegram.ui.views.base import answer_view
 from presentation.telegram.ui.views.dry_cleaning_requests import (
     DryCleaningRequestReviewView,
 )
+from presentation.telegram.ui.views.menu import MenuView
 
 
 router = Router(name=__name__)
@@ -41,9 +42,9 @@ async def on_dry_cleaning_request_response(
         message.web_app_data.data,
     )
     if review_result.department == Department.MSK:
-        base_url = config.msk_web_app_base_url
+        base_url = config.api.msk_base_url
     elif review_result.department == Department.SPB:
-        base_url = config.spb_web_app_base_url
+        base_url = config.api.spb_base_url
     else:
         assert_never(review_result.department)
 
@@ -60,7 +61,12 @@ async def on_dry_cleaning_request_response(
                 review_result=review_result,
             ).execute()
 
-    await message.answer('✅ Запрос успешно обработан')
+    await message.answer('✅ Запрос на химчистку успешно обработан')
+    view = MenuView(
+        msk_web_app_base_url=config.web_app.msk_base_url,
+        spb_web_app_base_url=config.web_app.spb_base_url,
+    )
+    await answer_view(message, view)
 
 
 @router.callback_query(
@@ -73,9 +79,9 @@ async def on_show_dry_cleaning_request_review_menu(
         config: Config,
 ) -> None:
     if callback_data.department == Department.MSK:
-        base_url = config.msk_web_app_base_url
+        base_url = config.web_app.msk_base_url
     elif callback_data.department == Department.SPB:
-        base_url = config.spb_web_app_base_url
+        base_url = config.web_app.spb_base_url
     else:
         assert_never(callback_data.department)
 
