@@ -5,4 +5,6 @@ description = "Add your description here"
 requires-python = ">=3.12"
 dependencies = [
     "aiogram>=3.18.0",
+    "fast-depends>=2.4.12",
+    "httpx>=0.28.1",
 ]

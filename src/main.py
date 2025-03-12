@@ -6,17 +6,27 @@ from aiogram.enums import ParseMode
 
 from bootstrap.config import load_config_from_file
 from bootstrap.logger import setup_logging
+import presentation.telegram.handlers
 from presentation.telegram.middlewares.whitelist import WhitelistMiddleware
+
+
+def include_handlers(dispatcher: Dispatcher) -> None:
+    dispatcher.include_routers(
+        presentation.telegram.handlers.dry_cleaning_requests.router,
+        presentation.telegram.handlers.start.router,
+    )
 
 
 async def main() -> None:
     config = load_config_from_file()
-    setup_logging()
+    # setup_logging()
     bot = Bot(
         token=config.telegram_bot_token,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML),
     )
     dispatcher = Dispatcher()
+    dispatcher['config'] = config
+    include_handlers(dispatcher)
     dispatcher.update.outer_middleware(
         WhitelistMiddleware(user_ids=config.whitelist_user_ids),
     )

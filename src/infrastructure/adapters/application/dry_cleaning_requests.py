@@ -1,0 +1,44 @@
+from dataclasses import dataclass
+
+import httpx
+
+from domain.entities.dry_cleaning_requests import (
+    DryCleaningRequestReviewResult,
+)
+
+
+@dataclass(frozen=True, slots=True)
+class DryCleaningRequestGateway:
+    http_client: httpx.AsyncClient
+
+    async def get_by_id(self, dry_cleaning_request_id: int):
+        url = f'/shifts/dry-cleaning-requests/{dry_cleaning_request_id}/'
+        response = await self.http_client.get(url)
+
+    async def approve(
+            self,
+            review_result: DryCleaningRequestReviewResult,
+    ):
+        url = (
+            '/shifts/dry-cleaning-requests'
+            f'/{review_result.dry_cleaning_request_id}/approve/'
+        )
+        request_data = {
+            'comment': review_result.comment,
+            'services': [
+                {'id': service.id, 'count': service.count}
+                for service in review_result.services
+            ]
+        }
+        await self.http_client.post(url, json=request_data)
+
+    async def reject(
+            self,
+            review_result: DryCleaningRequestReviewResult,
+    ):
+        url = (
+            '/shifts/dry-cleaning-requests'
+            f'/{review_result.dry_cleaning_request_id}/reject/'
+        )
+        request_data = {'comment': review_result.comment}
+        await self.http_client.post(url, json=request_data)
