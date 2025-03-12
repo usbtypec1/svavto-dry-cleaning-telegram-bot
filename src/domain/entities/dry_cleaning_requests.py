@@ -11,14 +11,16 @@ from domain.entities.enums.dry_cleaning_request_statuses import (
 
 class DryCleaningRequestService(BaseModel):
     id: UUID
+    name: str
     count: int
+    is_countable: bool
 
 
 class DryCleaningRequest(BaseModel):
     id: int
     shift_id: int
     car_number: str
-    photo_file_ids: list[str]
+    photo_urls: list[str]
     services: list[DryCleaningRequestService]
     status: DryCleaningRequestStatus
     response_comment: str | None
@@ -32,3 +34,7 @@ class DryCleaningRequestReviewResult(BaseModel):
     services: list[DryCleaningRequestService]
     comment: str | None
     department: Department
+
+
+class DryCleaningRequestOpen(BaseModel):
+    dry_cleaning_request_id: int

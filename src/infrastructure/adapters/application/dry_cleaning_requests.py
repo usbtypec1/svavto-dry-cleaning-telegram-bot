@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import httpx
 
 from domain.entities.dry_cleaning_requests import (
-    DryCleaningRequestReviewResult,
+    DryCleaningRequest, DryCleaningRequestReviewResult,
 )
 
 
@@ -11,9 +11,13 @@ from domain.entities.dry_cleaning_requests import (
 class DryCleaningRequestGateway:
     http_client: httpx.AsyncClient
 
-    async def get_by_id(self, dry_cleaning_request_id: int):
+    async def get_by_id(
+            self,
+            dry_cleaning_request_id: int,
+    ) -> DryCleaningRequest:
         url = f'/shifts/dry-cleaning-requests/{dry_cleaning_request_id}/'
         response = await self.http_client.get(url)
+        return DryCleaningRequest.model_validate_json(response.text)
 
     async def approve(
             self,

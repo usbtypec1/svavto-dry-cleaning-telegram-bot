@@ -1,8 +1,12 @@
-from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, WebAppInfo
+from aiogram.types import (
+    InputMediaPhoto, KeyboardButton, ReplyKeyboardMarkup,
+    WebAppInfo,
+)
 
+from domain.entities.dry_cleaning_requests import DryCleaningRequest
 from domain.entities.enums.departments import Department
 from presentation.telegram.ui import button_texts
-from presentation.telegram.ui.views.base import TextView
+from presentation.telegram.ui.views.base import MediaGroupView, TextView
 
 
 class DryCleaningRequestReviewView(TextView):
@@ -29,3 +33,24 @@ class DryCleaningRequestReviewView(TextView):
             web_app=WebAppInfo(url=url),
         )
         return ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[[button]])
+
+
+class DryCleaningRequestView(MediaGroupView):
+
+    def __init__(self, dry_cleaning_request: DryCleaningRequest):
+        self.__dry_cleaning_request = dry_cleaning_request
+
+    def get_medias(self) -> list[InputMediaPhoto]:
+        return [
+            InputMediaPhoto(media=photo_url)
+            for photo_url in self.__dry_cleaning_request.photo_urls
+        ]
+
+    def get_caption(self) -> str:
+        lines: list[str] = ['<b>Запрашиваемые услуги:</b>']
+        for service in self.__dry_cleaning_request.services:
+            if service.is_countable:
+                lines.append(f'{service.name} - {service.count} шт.')
+            else:
+                lines.append(service.name)
+        return '\n'.join(lines)
