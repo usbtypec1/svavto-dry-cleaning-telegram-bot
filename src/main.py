@@ -3,6 +3,7 @@ import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.types import BotCommand
 
 from bootstrap.config import load_config_from_file
 from bootstrap.logger import setup_logging
@@ -17,6 +18,17 @@ def include_handlers(dispatcher: Dispatcher) -> None:
     )
 
 
+async def setup_commands(bot: Bot) -> None:
+    await bot.set_my_commands(
+        [
+            BotCommand(
+                command='start',
+                description='Меню бота',
+            ),
+        ]
+    )
+
+
 async def main() -> None:
     config = load_config_from_file()
     # setup_logging()
@@ -24,6 +36,7 @@ async def main() -> None:
         token=config.telegram_bot_token,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML),
     )
+    await setup_commands(bot)
     dispatcher = Dispatcher()
     dispatcher['config'] = config
     include_handlers(dispatcher)
