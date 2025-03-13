@@ -47,7 +47,10 @@ class DryCleaningRequestView(MediaGroupView):
         ]
 
     def get_caption(self) -> str:
-        lines: list[str] = ['<b>Запрашиваемые услуги:</b>']
+        lines: list[str] = [
+            f'<b>Сотрудник {self.__dry_cleaning_request.staff_full_name}'
+            ' запрашивает химчистку:</b>'
+        ]
         for service in self.__dry_cleaning_request.services:
             if service.is_countable:
                 lines.append(f'{service.name} - {service.count} шт.')

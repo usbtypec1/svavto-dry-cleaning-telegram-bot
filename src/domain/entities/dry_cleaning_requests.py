@@ -19,6 +19,8 @@ class DryCleaningRequestService(BaseModel):
 class DryCleaningRequest(BaseModel):
     id: int
     shift_id: int
+    staff_id: int
+    staff_full_name: str
     car_number: str
     photo_urls: list[str]
     services: list[DryCleaningRequestService]
@@ -28,10 +30,15 @@ class DryCleaningRequest(BaseModel):
     updated_at: datetime.datetime
 
 
+class DryCleaningRequestReviewResultService(BaseModel):
+    id: UUID
+    count: int
+
+
 class DryCleaningRequestReviewResult(BaseModel):
     is_approved: bool
     dry_cleaning_request_id: int
-    services: list[DryCleaningRequestService]
+    services: list[DryCleaningRequestReviewResultService]
     comment: str | None
     department: Department
 
