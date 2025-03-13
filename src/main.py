@@ -31,7 +31,7 @@ async def setup_commands(bot: Bot) -> None:
 
 async def main() -> None:
     config = load_config_from_file()
-    # setup_logging()
+    setup_logging()
     bot = Bot(
         token=config.telegram_bot_token,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML),

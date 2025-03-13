@@ -1,3 +1,4 @@
+import logging
 from typing import assert_never
 
 import httpx
@@ -5,21 +6,22 @@ from aiogram import F, Router
 from aiogram.filters import StateFilter
 from aiogram.types import CallbackQuery, Message
 
-from application.interactors.dry_cleaning_request_approve import \
-    DryCleaningRequestApproveInteractor
-from application.interactors.dry_cleaning_request_reject import \
-    DryCleaningRequestRejectInteractor
+from application.interactors.dry_cleaning_request_approve import (
+    DryCleaningRequestApproveInteractor,
+)
+from application.interactors.dry_cleaning_request_reject import (
+    DryCleaningRequestRejectInteractor,
+)
 from bootstrap.config import Config
-from domain.entities.dry_cleaning_requests import \
-    (
+from domain.entities.dry_cleaning_requests import (
     DryCleaningRequestOpen, DryCleaningRequestReviewResult,
 )
 from domain.entities.enums.departments import Department
-from infrastructure.adapters.application.dry_cleaning_requests import \
-    DryCleaningRequestGateway
+from infrastructure.adapters.application.dry_cleaning_requests import (
+    DryCleaningRequestGateway,
+)
 from presentation.telegram.callback_data.dry_cleaning_requests import (
     DryCleaningRequestReviewCallbackData,
-
 )
 from presentation.telegram.ui import button_texts
 from presentation.telegram.ui.views.base import answer_view
@@ -28,6 +30,8 @@ from presentation.telegram.ui.views.dry_cleaning_requests import (
 )
 from presentation.telegram.ui.views.menu import MenuView
 
+
+logger = logging.getLogger(__name__)
 
 router = Router(name=__name__)
 
@@ -40,6 +44,7 @@ async def on_dry_cleaning_request_response(
         message: Message,
         config: Config,
 ) -> None:
+    logger.info('Dry cleaning request reviewed: %s', message.web_app_data.data)
     review_result = DryCleaningRequestReviewResult.model_validate_json(
         message.web_app_data.data,
     )
