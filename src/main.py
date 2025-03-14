@@ -8,7 +8,7 @@ from aiogram.types import BotCommand
 from bootstrap.config import load_config_from_file
 from bootstrap.logger import setup_logging
 import presentation.telegram.handlers
-from presentation.telegram.middlewares.whitelist import WhitelistMiddleware
+from presentation.telegram.middlewares.admins import AdminUserIdsMiddleware
 
 
 def include_handlers(dispatcher: Dispatcher) -> None:
@@ -40,9 +40,7 @@ async def main() -> None:
     dispatcher = Dispatcher()
     dispatcher['config'] = config
     include_handlers(dispatcher)
-    dispatcher.update.outer_middleware(
-        WhitelistMiddleware(user_ids=config.whitelist_user_ids),
-    )
+    dispatcher.update.outer_middleware(AdminUserIdsMiddleware(config=config))
     await bot.delete_webhook(drop_pending_updates=True)
     await dispatcher.start_polling(bot)
 
