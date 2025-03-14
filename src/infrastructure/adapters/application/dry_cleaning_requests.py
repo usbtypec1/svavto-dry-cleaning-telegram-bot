@@ -15,7 +15,7 @@ class DryCleaningRequestGateway:
             self,
             dry_cleaning_request_id: int,
     ) -> DryCleaningRequest:
-        url = f'/shifts/dry-cleaning-requests/{dry_cleaning_request_id}/'
+        url = f'/dry-cleaning/requests/{dry_cleaning_request_id}/'
         response = await self.http_client.get(url)
         return DryCleaningRequest.model_validate_json(response.text)
 
@@ -24,7 +24,7 @@ class DryCleaningRequestGateway:
             review_result: DryCleaningRequestReviewResult,
     ):
         url = (
-            '/shifts/dry-cleaning-requests'
+            '/dry-cleaning/requests'
             f'/{review_result.dry_cleaning_request_id}/approve/'
         )
         request_data = {
@@ -41,7 +41,7 @@ class DryCleaningRequestGateway:
             review_result: DryCleaningRequestReviewResult,
     ):
         url = (
-            '/shifts/dry-cleaning-requests'
+            '/dry-cleaning/requests'
             f'/{review_result.dry_cleaning_request_id}/reject/'
         )
         request_data = {'response_comment': review_result.comment}
